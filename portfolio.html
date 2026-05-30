@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Face Balance — Dev Session Portfolio</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #08090d;
+    --surface: #0f1117;
+    --surface2: #161821;
+    --border: rgba(0,200,255,0.12);
+    --cyan: #00d4ff;
+    --green: #22c55e;
+    --lime: #84cc16;
+    --yellow: #eab308;
+    --orange: #f97316;
+    --red: #ef4444;
+    --text: #e8f4ff;
+    --muted: rgba(180,220,255,0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 40%, rgba(0,180,255,0.07) 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 37px, rgba(0,180,255,0.04) 38px),
+      repeating-linear-gradient(90deg, transparent, transparent 37px, rgba(0,180,255,0.04) 38px);
+    pointer-events: none;
+  }
+  .cover-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    border: 1px solid rgba(0,200,255,0.25);
+    border-radius: 20px;
+    padding: 6px 18px;
+    margin-bottom: 32px;
+  }
+  .cover h1 {
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 0%, rgba(0,210,255,0.85) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  .cover-sub {
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-bottom: 48px;
+    max-width: 520px;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .meta-item { text-align: center; }
+  .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 4px; }
+  .meta-value { font-size: 14px; font-weight: 600; color: var(--cyan); }
+
+  .section {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 64px 40px;
+  }
+  .section + .section { border-top: 1px solid var(--border); }
+  .section-label { font-size: 10px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--cyan); margin-bottom: 12px; }
+  .section-title { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 32px; }
+
+  .badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; }
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    padding: 5px 12px; border-radius: 6px;
+    border: 1px solid rgba(0,200,255,0.2);
+    background: rgba(0,180,255,0.06);
+    color: rgba(160,230,255,0.85);
+  }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px; break-inside: avoid; }
+  .card-icon { font-size: 22px; margin-bottom: 10px; }
+  .card-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .card-desc { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: grid; grid-template-columns: 120px 1fr; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--border); break-inside: avoid; }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-left { padding-top: 2px; }
+  .tl-tag { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 4px; display: inline-block; }
+  .tl-tag.feat   { background: rgba(0,180,255,0.12);   color: #60d0ff; }
+  .tl-tag.fix    { background: rgba(249,115,22,0.12);  color: #fb923c; }
+  .tl-tag.design { background: rgba(132,204,22,0.12);  color: #a3e635; }
+  .tl-tag.ux     { background: rgba(139,92,246,0.14);  color: #c084fc; }
+  .tl-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .tl-detail { font-size: 12.5px; color: var(--muted); line-height: 1.65; }
+  .tl-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: var(--surface2);
+    border: 1px solid rgba(0,200,255,0.1);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-top: 10px;
+    color: rgba(160,230,255,0.7);
+    white-space: pre;
+    overflow-x: auto;
+    line-height: 1.6;
+  }
+
+  .color-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .color-chip { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; min-width: 155px; }
+  .color-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .color-label { font-size: 12px; font-weight: 600; color: #fff; }
+  .color-range { font-size: 10.5px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  .arch-row { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start; }
+  .arch-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+  .arch-box-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--cyan); margin-bottom: 10px; }
+  .arch-box ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .arch-box li { font-size: 12px; color: var(--muted); padding-left: 12px; position: relative; }
+  .arch-box li::before { content: '›'; position: absolute; left: 0; color: var(--cyan); opacity: 0.5; }
+  .arch-arrow { display: flex; align-items: center; justify-content: center; color: var(--cyan); opacity: 0.35; font-size: 20px; padding-top: 30px; }
+
+  .phases { display: flex; align-items: center; flex-wrap: wrap; gap: 0; margin-top: 12px; }
+  .phase-node { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; text-align: center; }
+  .phase-name { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--cyan); }
+  .phase-desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .phase-arrow { color: var(--cyan); opacity: 0.3; font-size: 16px; padding: 0 6px; }
+
+  @media print {
+    body { background: #08090d !important; }
+    .cover { min-height: auto; padding: 48px 40px; }
+    .section { padding: 40px; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-tag">Dev Session · 2026.05.30</div>
+  <h1>Face Balance</h1>
+  <p class="cover-sub">얼굴 좌우 균형 분석 앱 — Futuristic Scan UI 전면 개편 세션</p>
+  <div class="cover-meta">
+    <div class="meta-item"><div class="meta-label">플랫폼</div><div class="meta-value">iOS / Android</div></div>
+    <div class="meta-item"><div class="meta-label">프레임워크</div><div class="meta-value">Expo + React Native</div></div>
+    <div class="meta-item"><div class="meta-label">AI 엔진</div><div class="meta-value">MediaPipe FaceMesh</div></div>
+    <div class="meta-item"><div class="meta-label">랜드마크</div><div class="meta-value">468 points</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Technology</div>
+  <div class="section-title">기술 스택</div>
+  <div class="badges">
+    <span class="badge">Expo SDK 54</span>
+    <span class="badge">React Native</span>
+    <span class="badge">TypeScript</span>
+    <span class="badge">expo-router</span>
+    <span class="badge">MediaPipe FaceMesh 0.4</span>
+    <span class="badge">WebView Bridge</span>
+    <span class="badge">Canvas 2D API</span>
+    <span class="badge">react-native-svg</span>
+    <span class="badge">Animated API</span>
+    <span class="badge">AsyncStorage</span>
+    <span class="badge">EMA Smoothing α=0.18</span>
+    <span class="badge">requestAnimationFrame</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Architecture</div>
+  <div class="section-title">핵심 구조</div>
+  <div class="arch-row">
+    <div class="arch-box">
+      <div class="arch-box-title">WebView Layer (Canvas)</div>
+      <ul>
+        <li>MediaPipe FaceMesh 로딩 및 실행</li>
+        <li>카메라 피드 렌더링 (mirror flip)</li>
+        <li>FACEMESH_TESSELATION 와이어프레임</li>
+        <li>Scan glow 애니메이션 (scanFrac)</li>
+        <li>EMA smoothing (α=0.18)</li>
+        <li>Y축 회전 (ROT_AMP=0.08, ±4.6°)</li>
+        <li>Flash overlay (완료 시 플래시)</li>
+        <li>17개 키 포인트 점수별 색상 렌더링</li>
+      </ul>
+    </div>
+    <div class="arch-arrow">⇄</div>
+    <div class="arch-box">
+      <div class="arch-box-title">React Native Layer</div>
+      <ul>
+        <li>Phase state machine (6단계)</li>
+        <li>GridOverlay SVG (항상 고정)</li>
+        <li>AlignFrame 타원 가이드</li>
+        <li>FLabel 점수 라벨 (실시간)</li>
+        <li>Gauge 원형 그래프 (4종)</li>
+        <li>TiltBar 기울기 인디케이터</li>
+        <li>프레임 이탈 UX (1s/2s 타이머)</li>
+        <li>AsyncStorage 기록 저장</li>
+      </ul>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;">Phase State Machine</div>
+    <div class="phases">
+      <div class="phase-node"><div class="phase-name">idle</div><div class="phase-desc">대기</div></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-node"><div class="phase-name">aligning</div><div class="phase-desc">정렬 2초</div></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-node"><div class="phase-name">scan_start</div><div class="phase-desc">시작</div></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-node"><div class="phase-name">scanning</div><div class="phase-desc">스캔 중</div></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-node"><div class="phase-name">finishing</div><div class="phase-desc">마무리</div></div>
+      <div class="phase-arrow">→</div>
+      <div class="phase-node"><div class="phase-name">done</div><div class="phase-desc">완료</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Session Log</div>
+  <div class="section-title">오늘 작업 내역</div>
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag design">Design</span></div>
+      <div>
+        <div class="tl-title">FACEMESH_TESSELATION 기반 와이어프레임 메쉬 UI 전면 교체</div>
+        <div class="tl-detail">기존 랜드마크 점 방식 → 468개 삼각형 연결선 기반 와이어프레임으로 교체. 화이트/사이언 색상, 검은 배경 위에 얇은 선으로 SF 의료 스캐너 느낌 구현. done 단계에서만 완성 메쉬 노출.</div>
+        <div class="tl-code">// Done mesh: white, higher opacity than grid
+ctx.strokeStyle = 'rgba(220,235,255,' + (0.18 + fb*0.08) + ')';
+ctx.lineWidth = 0.5;  // tesselation | 0.6 features | 0.6 oval</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag feat">Feature</span></div>
+      <div>
+        <div class="tl-title">Surface-following Scan Glow 애니메이션</div>
+        <div class="tl-detail">단순 레이저 라인이 아닌, 얼굴 depth(z좌표)를 반영한 표면 추적 스캔 구현. scanFrac(y,z)로 깊이 보정. GWIN=0.10 슬라이딩 윈도우, 이차함수 alpha falloff. scan_start 진입 즉시 시작.</div>
+        <div class="tl-code">function scanFrac(y, z) { return y + (z||0) * 0.20; }
+var effSP = phase === 'scan_start' ? 0.05 : window.scanProgress;
+var alpha = norm * norm * 0.32;   // quadratic falloff</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag fix">Fix</span></div>
+      <div>
+        <div class="tl-title">좌우 반전 이중 미러 버그 수정</div>
+        <div class="tl-detail">vx()에서 x 미러 + 캔버스 ctx.scale(-1,1) 이중 반전으로 메쉬가 얼굴 반대 방향으로 움직이던 버그. vx에서 미러 제거, 캔버스 플립만 유지. sp 좌표도 1-vx()로 보정.</div>
+        <div class="tl-code">// BEFORE (double mirror bug)
+function vx(x) { return 1 - (x*sx + ox); }
+// AFTER (single mirror via canvas flip only)
+function vx(x) { return x*sx + ox; }
+// sp screen coords: x = 1 - vx(lm.x)</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag ux">UX</span></div>
+      <div>
+        <div class="tl-title">AlignFrame 타원 가이드 + 2초 카운트다운</div>
+        <div class="tl-detail">idle + aligning 두 단계 모두에서 타원 가이드 표시. aligning 진입 시 2초 카운트다운. SVG fillRule=evenodd로 타원 외부 마스킹, 모서리 L자 브래킷 4개.</div>
+        <div class="tl-code">{(scanPhase === 'idle' || scanPhase === 'aligning') && &lt;AlignFrame/&gt;}
+{scanPhase === 'aligning' && &lt;Text&gt;{alignSeconds}&lt;/Text&gt;}</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag ux">UX</span></div>
+      <div>
+        <div class="tl-title">프레임 이탈 UX — 1s 경고 / 2s 자동 중단</div>
+        <div class="tl-detail">스캔 중 얼굴이 프레임 밖으로 나가면: 1초 미만 무시 → 1초 경과 시 주황 경고 텍스트 → 2초 경과 시 자동 리셋(idle 복귀). 얼굴 복귀 시 타이머 즉시 취소.</div>
+        <div class="tl-code">faceOutTimerRef → 1000ms → setScanWarning(true)
+faceOutWarnTimerRef → +1000ms → setPhase('idle') + reset</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag design">Design</span></div>
+      <div>
+        <div class="tl-title">Full-Screen CAD Grid Overlay</div>
+        <div class="tl-detail">38px 정사각형 셀 기반 화면 전체 격자. 수직 ~10줄 + 수평 ~22줄 화면 끝까지 균등 분할. 타원 중심(OX=SW/2, OY=SH×0.40 ≒ 코 위치) 기준 십자선 별도 강조. 항상 표시, 모든 phase에서 유지.</div>
+        <div class="tl-code">const GRID_CELL = 38;
+const vxs = Array.from({length: Math.floor((SW-1)/GRID_CELL)},
+  (_, i) => (i+1) * GRID_CELL);  // [38, 76, 114, ...]
+// Center crosshair at (OX, OY) — opacity 0.55 (vs grid 0.30)</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag feat">Feature</span></div>
+      <div>
+        <div class="tl-title">17개 키 랜드마크 점 + 측정 항목별 색상</div>
+        <div class="tl-detail">전체 468개 → 중심선 7개·눈 6개·입꼬리 2개·광대 2개, 총 17개로 최소화. 각 포인트가 해당 측정 항목(eye/mouth/face/center) 점수 색상으로 개별 렌더링.</div>
+        <div class="tl-code">var KM = [
+  [10,'center'], [9,'center'], [4,'center'], [152,'center'],
+  [468,'eye'], [473,'eye'], [33,'eye'], [133,'eye'],
+  [61,'mouth'], [291,'mouth'],
+  [234,'face'], [454,'face'], ...
+];</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag feat">Feature</span></div>
+      <div>
+        <div class="tl-title">점수 ↔ 포인트 색상 실시간 동기화</div>
+        <div class="tl-detail">done 단계에서 landmarks 메시지가 올 때마다 window.scoreEye/scoreMouth/scoreFace/scoreCenter를 WebView에 inject. FLabel(숫자) · Gauge(원형) · WebView 점 세 곳이 동일 smoothed 값으로 실시간 연동.</div>
+        <div class="tl-code">// landmarks 수신 시 done phase라면 즉시 inject
+if (phaseRef.current === 'done') {
+  webRef.current?.injectJavaScript(
+    `window.scoreEye=${s.eye};window.scoreMouth=${s.mouth};
+     window.scoreFace=${s.face};window.scoreCenter=${s.center};true;`
+  );
+}</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-left"><span class="tl-tag design">Design</span></div>
+      <div>
+        <div class="tl-title">스캔 완료 후 화이트 메쉬 + 화면 디밍</div>
+        <div class="tl-detail">done 단계 진입 시 메쉬 색상을 사이언 → 흰색 계열로 전환, 불투명도 상향. 카메라 피드에 rgba(0,0,5,0.22) 어두운 오버레이로 얼굴 부담 감소. 스캔 중 rgba(0,0,8,0.32)보다 밝게 유지.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Design System</div>
+  <div class="section-title">점수 색상 시스템</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:24px;">점수 숫자(FLabel/Gauge) · 랜드마크 점(WebView dot) · 게이지 원형 — 세 요소가 동일 임계값과 동일 RGB로 실시간 동기화됨</p>
+  <div class="color-row">
+    <div class="color-chip">
+      <div class="color-dot" style="background:#22c55e;box-shadow:0 0 8px #22c55e88;"></div>
+      <div><div class="color-label">초록 (Green)</div><div class="color-range">≥ 90점 · #22C55E</div></div>
+    </div>
+    <div class="color-chip">
+      <div class="color-dot" style="background:#84cc16;box-shadow:0 0 8px #84cc1688;"></div>
+      <div><div class="color-label">연두 (Lime)</div><div class="color-range">80–89점 · #84CC16</div></div>
+    </div>
+    <div class="color-chip">
+      <div class="color-dot" style="background:#eab308;box-shadow:0 0 8px #eab30888;"></div>
+      <div><div class="color-label">노랑 (Yellow)</div><div class="color-range">70–79점 · #EAB308</div></div>
+    </div>
+    <div class="color-chip">
+      <div class="color-dot" style="background:#f97316;box-shadow:0 0 8px #f9731688;"></div>
+      <div><div class="color-label">주황 (Orange)</div><div class="color-range">60–69점 · #F97316</div></div>
+    </div>
+    <div class="color-chip">
+      <div class="color-dot" style="background:#ef4444;box-shadow:0 0 8px #ef444488;"></div>
+      <div><div class="color-label">빨강 (Red)</div><div class="color-range">&lt; 60점 · #EF4444</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Features</div>
+  <div class="section-title">구현 기능 요약</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🪞</div>
+      <div class="card-title">미러 모드 기본값</div>
+      <div class="card-desc">앱 시작 시 미러 모드로 기본 진입. 라인 모드 전환 시 카메라 피드 없이 검은 배경에 메쉬만 표시.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔬</div>
+      <div class="card-title">Y축 회전 애니메이션</div>
+      <div class="card-desc">ROT_AMP=0.08 (±4.6°), ROT_SPEED=0.00020. applyRot()으로 정규화 좌표 공간에서 회전 적용 후 vx 변환.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">스캔 완료 플래시</div>
+      <div class="card-desc">finishing → done 전환 시 flashPhase 1→2→0. 사이언 오버레이 max alpha 0.14로 완료 확인 효과.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">📐</div>
+      <div class="card-title">AlignFrame 타원 가이드</div>
+      <div class="card-desc">SVG fillRule=evenodd로 타원 외부 마스킹. 모서리 L자 브래킷 4개. idle + aligning 두 단계에서 표시.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">측정 항목 4종</div>
+      <div class="card-desc">눈 높이 대칭 · 입꼬리 대칭 · 윤곽 대칭 · 중심선 편차. EMA smoothing (α=0.25)으로 수치 안정화.</div>
+    </div>
+    <div class="card">
+      <div class="card-icon">💾</div>
+      <div class="card-title">기록 저장 & 히스토리</div>
+      <div class="card-desc">AsyncStorage 기반 로컬 저장. analysis.tsx 상세 결과 뷰. history 탭에서 과거 기록 열람.</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Problem → Solution</div>
+  <div class="section-title">문제 발견 &amp; 해결 과정</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:36px;">실기기 테스트에서 발견된 3가지 주요 문제와 각 해결 방법.</p>
+
+  <!-- Problem 1: Double Mirror -->
+  <div style="margin-bottom:48px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <span style="background:rgba(249,115,22,0.15);color:#fb923c;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:4px;">Bug #1</span>
+      <span style="font-size:16px;font-weight:700;color:#fff;">이중 미러 — 메쉬가 얼굴 반대 방향으로 움직임</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
+      <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,180,255,0.08);padding:2px 6px;border-radius:3px;">vx(x) = 1-(x*sx+ox)</code> 로 x 미러 +
+      <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,180,255,0.08);padding:2px 6px;border-radius:3px;">ctx.scale(-1,1)</code> 캔버스 플립 = 이중 반전.
+      얼굴이 오른쪽으로 움직이면 메쉬는 왼쪽으로 움직이는 현상. vx에서 미러 제거, 캔버스 플립만 유지로 해결.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:0;">
+      <div style="text-align:center;">
+        <img src="portfolio-assets/bug_double_mirror.png" style="width:100%;max-width:240px;border-radius:20px;border:2px solid rgba(239,68,68,0.4);box-shadow:0 0 24px rgba(239,68,68,0.15);display:inline-block;"/>
+        <div style="font-size:11px;color:#f87171;margin-top:8px;font-weight:600;">BEFORE — 메쉬 좌우 반전, 점수 2-4%</div>
+      </div>
+      <div style="text-align:center;font-size:22px;color:rgba(0,220,255,0.3);">→</div>
+      <div style="text-align:center;">
+        <img src="portfolio-assets/screenshot_done.png" style="width:100%;max-width:240px;border-radius:20px;border:2px solid rgba(34,197,94,0.4);box-shadow:0 0 24px rgba(34,197,94,0.12);display:inline-block;"/>
+        <div style="font-size:11px;color:#4ade80;margin-top:8px;font-weight:600;">AFTER — 얼굴에 정확히 매핑, 96-99%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem 2: Mesh showing pre-scan -->
+  <div style="margin-bottom:48px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <span style="background:rgba(249,115,22,0.15);color:#fb923c;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:4px;">Bug #2</span>
+      <span style="font-size:16px;font-weight:700;color:#fff;">스캔 전부터 완성 메쉬 노출 — 긴장감 없음</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
+      scan_start 단계부터 전체 테셀레이션 메쉬 + 아이리스 다이아몬드가 그대로 표시됨. 스캔의 의미가 없어지는 UX 문제.
+      <code style="font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,180,255,0.08);padding:2px 6px;border-radius:3px;">showMesh = isDone</code> 조건으로 done 단계에만 완성 메쉬 표시, 스캔 중에는 subtle glow만.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:0;">
+      <div style="text-align:center;">
+        <img src="portfolio-assets/bug_mesh_prescan.png" style="width:100%;max-width:240px;border-radius:20px;border:2px solid rgba(239,68,68,0.4);box-shadow:0 0 24px rgba(239,68,68,0.15);display:inline-block;"/>
+        <div style="font-size:11px;color:#f87171;margin-top:8px;font-weight:600;">BEFORE — scan_start부터 전체 메쉬 표시</div>
+      </div>
+      <div style="text-align:center;font-size:22px;color:rgba(0,220,255,0.3);">→</div>
+      <div style="text-align:center;">
+        <img src="portfolio-assets/fix_scan_clean.png" style="width:100%;max-width:240px;border-radius:20px;border:2px solid rgba(34,197,94,0.4);box-shadow:0 0 24px rgba(34,197,94,0.12);display:inline-block;"/>
+        <div style="font-size:11px;color:#4ade80;margin-top:8px;font-weight:600;">AFTER — 스캔 중 카메라만, done에 메쉬 공개</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem 3: 468 dots too many -->
+  <div style="margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+      <span style="background:rgba(249,115,22,0.15);color:#fb923c;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:4px;">Bug #3</span>
+      <span style="font-size:16px;font-weight:700;color:#fff;">468개 점 전체 출력 — 얼굴이 점으로 덮임</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
+      done 단계에서 468개 랜드마크 전체를 점으로 찍어 얼굴이 점 구름으로 가득 차는 문제.
+      눈·코·입꼬리·중심선·광대 총 17개 키 포인트로 최소화, 항목별 점수 색상 개별 적용.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 60px 1fr;align-items:center;gap:0;">
+      <div style="text-align:center;">
+        <img src="portfolio-assets/bug_all_dots.png" style="width:100%;max-width:240px;border-radius:20px;border:2px solid rgba(239,68,68,0.4);box-shadow:0 0 24px rgba(239,68,68,0.15);display:inline-block;"/>
+        <div style="font-size:11px;color:#f87171;margin-top:8px;font-weight:600;">BEFORE — 468개 점으로 얼굴 전체 덮임</div>
+      </div>
+      <div style="text-align:center;font-size:22px;color:rgba(0,220,255,0.3);">→</div>
+      <div style="text-align:center;">
+        <img src="portfolio-assets/screenshot_done.png" style="width:100%;max-width:240px;border-radius:20px;border:2px solid rgba(34,197,94,0.4);box-shadow:0 0 24px rgba(34,197,94,0.12);display:inline-block;"/>
+        <div style="font-size:11px;color:#4ade80;margin-top:8px;font-weight:600;">AFTER — 17개 키 포인트, 항목별 색상</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Result</div>
+  <div class="section-title">구현 결과 — 실기기 스크린샷</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:28px;">세 단계의 실기기 촬영 — Line 모드 idle / Mirror 모드 aligning / Mirror 모드 done</p>
+  <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;padding-bottom:24px;">
+    <div style="text-align:center;">
+      <img src="portfolio-assets/screenshot_line_idle.png"
+           style="width:220px;border-radius:28px;border:1px solid rgba(0,200,255,0.2);box-shadow:0 0 40px rgba(0,180,255,0.10),0 16px 40px rgba(0,0,0,0.5);display:block;"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;">Line 모드 · idle<br/>타원 가이드, 검은 배경</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="portfolio-assets/screenshot_aligning.png"
+           style="width:220px;border-radius:28px;border:1px solid rgba(0,200,255,0.2);box-shadow:0 0 40px rgba(0,180,255,0.10),0 16px 40px rgba(0,0,0,0.5);display:block;"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;">Mirror 모드 · aligning<br/>그리드 오버레이 + 카운트다운</div>
+    </div>
+    <div style="text-align:center;">
+      <img src="portfolio-assets/screenshot_done.png"
+           style="width:220px;border-radius:28px;border:1px solid rgba(0,200,255,0.2);box-shadow:0 0 40px rgba(0,180,255,0.10),0 16px 40px rgba(0,0,0,0.5);display:block;"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:10px;">Mirror 모드 · done<br/>17 key points + 점수 라벨</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-label">Reference</div>
+  <div class="section-title">작업 레퍼런스 이미지</div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:28px;">작업 전 요구사항 정의에 사용된 UI 스펙 레퍼런스. 오늘 구현의 기반이 된 시각 자료.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+    <div>
+      <img src="portfolio-assets/ref5.png"
+           style="width:100%;border-radius:12px;border:1px solid rgba(0,200,255,0.15);display:block;" alt="ref5"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">전체 UI/UX 스펙 — 스캔 플로우, 주요 기능 정의</div>
+    </div>
+    <div>
+      <img src="portfolio-assets/ref4.png"
+           style="width:100%;border-radius:12px;border:1px solid rgba(0,200,255,0.15);display:block;" alt="ref4"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">미러 모드 스캔 진행 흐름 + 라인 모드 레이아웃</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+    <div>
+      <img src="portfolio-assets/ref1.png"
+           style="width:100%;border-radius:12px;border:1px solid rgba(0,200,255,0.15);display:block;" alt="ref1"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">Scan Glow · 포인트 규칙 · 그리드 · 이탈 방지 · 색상 규칙 상세 스펙</div>
+    </div>
+    <div>
+      <img src="portfolio-assets/ref2.png"
+           style="width:100%;border-radius:12px;border:1px solid rgba(0,200,255,0.15);display:block;" alt="ref2"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">미러 모드 기본 UI · 그리드 규칙 · 완료 후 포인트 · 이탈 방지 UI 스펙</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr;gap:20px;">
+    <div>
+      <img src="portfolio-assets/ref3.png"
+           style="width:100%;border-radius:12px;border:1px solid rgba(0,200,255,0.15);display:block;" alt="ref3"/>
+      <div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center;">글로우 초음파 · 화면 색상 정의 · 라인 모드 · 스캔 완료 · 스크린카드 전체 스펙</div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:48px 40px;border-top:1px solid var(--border);max-width:960px;margin:0 auto;">
+  <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">Face Balance · Dev Session · 2026.05.30 · app/camera.tsx</div>
+</div>
+
+</body>
+</html>

@@ -171,6 +171,8 @@
 
 > **작업일:** 2026-05-31 02:00
 
+![앱 아이콘](assets/images/icon.png)
+
 - 3D 와이어프레임 얼굴 + 스캔 브래킷 디자인으로 교체 (AI 생성 이미지)
 - `assets/images/icon.png` 및 `ios/.../AppIcon.appiconset` 동시 교체
 - iOS 알파 채널 제거 (JPEG 경유 변환) + 1024×1024 리사이즈
