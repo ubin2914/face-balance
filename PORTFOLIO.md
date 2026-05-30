@@ -109,7 +109,7 @@
 ### STEP 7 — 스캔 UI 전면 개편: 와이어프레임 메쉬 + Surface Glow
 
 > **목표:** 3D 스캐너 느낌의 몰입감 있는 스캔 UI 구현  
-> **작업일:** 2026-05-30
+> **작업일:** 2026-05-30 18:00
 
 **주요 변경사항:**
 
@@ -136,7 +136,7 @@
 
 ### STEP 8 — 포트폴리오 자동화: GitHub + Notion 연동
 
-> **작업일:** 2026-05-31
+> **작업일:** 2026-05-31 00:30
 
 - **GitHub 레포 생성** (`ubin2914/face-balance`) — 소스코드 + 스크린샷 전체 push
 - **Notion MCP 연결** — Claude Code와 Notion API 직접 연동 (`~/.claude/mcp.json`)
@@ -164,6 +164,18 @@
 | 얼굴 길쭉하게 왜곡 | 비율 무시 강제 확대 | Cover 모드 + 랜드마크 좌표 변환 |
 | Vignette가 반전됨 | scale(-1,1) winding order 역전 | ctx.restore() 이후 별도 처리 |
 | 패키지 빌드 오류 | VisionCamera v3/v4 헤더 충돌 | 비호환 패키지 3개 제거 |
+
+---
+
+### STEP 9 — 앱 아이콘 교체
+
+> **작업일:** 2026-05-31 02:00
+
+- 3D 와이어프레임 얼굴 + 스캔 브래킷 디자인으로 교체 (AI 생성 이미지)
+- `assets/images/icon.png` 및 `ios/.../AppIcon.appiconset` 동시 교체
+- iOS 알파 채널 제거 (JPEG 경유 변환) + 1024×1024 리사이즈
+- iOS 아이콘 캐시 문제 해결 (앱 삭제 → Clean Build → 재설치)
+- 기기별 카메라 줌 통일 버그 수정: `Math.max(W/vw, H/vh)` → `W/vw` (너비 기준 고정)
 
 ---
 
