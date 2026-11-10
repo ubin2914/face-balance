@@ -58,8 +58,15 @@ body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center
 .scan{position:relative;height:344px;display:flex;align-items:center;justify-content:center;margin-top:-4px}
 .scan .ring{position:absolute;width:300px;height:300px;border-radius:50%;
   background:radial-gradient(circle at 62% 42%, rgba(60,150,255,.20), rgba(120,90,255,.05) 54%, transparent 72%);filter:blur(8px)}
-#face3d{position:relative;z-index:2;touch-action:none;cursor:grab}
+#face3d{position:relative;z-index:2;width:330px;height:330px;touch-action:none;cursor:grab;perspective:900px}
 #face3d:active{cursor:grabbing}
+#face3d .fx{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+#face3d canvas{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;animation:fglow 4.5s ease-in-out infinite}
+@keyframes fglow{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(1.18) saturate(1.1)}}
+#face3d .beam{position:absolute;left:12%;right:12%;height:46px;top:0;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(80,170,255,.22) 70%,rgba(160,220,255,.55) 96%,transparent);
+  -webkit-mask-image:radial-gradient(closest-side,#000 60%,transparent);mask-image:radial-gradient(closest-side,#000 60%,transparent);animation:fbeam 4.2s cubic-bezier(.45,0,.55,1) infinite}
+@keyframes fbeam{0%{top:4%;opacity:0}12%{opacity:1}80%{opacity:1}100%{top:84%;opacity:0}}
 .scan .hint{position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:3;
   font-family:var(--mono);font-size:9.5px;letter-spacing:2px;color:var(--cyan-dim);text-transform:uppercase;
   display:flex;align-items:center;gap:9px;white-space:nowrap;pointer-events:none}
@@ -150,8 +157,8 @@ a{text-decoration:none}
 
     <div class="scan">
       <div class="ring"></div>
-      <canvas id="face3d" width="320" height="340"></canvas>
-      <span class="hint fade" id="hint"><b>◖</b>&nbsp;DRAG TO ROTATE · 360°&nbsp;<b>◗</b></span>
+      <div id="face3d" role="img" aria-label="얼굴 매핑 3D 모델"><div class="fx" id="faceFx"><canvas id="faceCv" width="640" height="640"></canvas><div class="beam"></div></div></div>
+      <span class="hint fade" id="hint"><b>◖</b>&nbsp;DRAG TO TILT · 3D&nbsp;<b>◗</b></span>
     </div>
 
     <div class="body">
@@ -198,6 +205,31 @@ a{text-decoration:none}
   </div>
 </div>
 
-<script src="head-mesh.js"></script>
+<script>
+(function(){
+  var box=document.getElementById('face3d'), fx=document.getElementById('faceFx'), hint=document.getElementById('hint');
+  var cv=document.getElementById('faceCv'), cx=cv.getContext('2d'), im=new Image();
+  im.onload=function(){ cx.drawImage(im,0,0,640,640); var d=cx.getImageData(0,0,640,640), p=d.data;
+    for(var i=0;i<p.length;i+=4){ var m=Math.max(p[i],p[i+1],p[i+2]); var a=Math.pow(Math.max(0,Math.min(1,(m-6)/150)),0.8); if(a<=0){p[i+3]=0;continue;} p[i]=Math.min(255,p[i]/a); p[i+1]=Math.min(255,p[i+1]/a); p[i+2]=Math.min(255,p[i+2]/a); p[i+3]=Math.round(a*255); }
+    cx.putImageData(d,0,0); };
+  im.src='face.webp';
+  var tx=0, ty=0, x=0, y=0, drag=false, sx=0, sy=0, bx=0, by=0, last=0;
+  function down(e){ var t=e.touches?e.touches[0]:e; drag=true; sx=t.clientX; sy=t.clientY; bx=tx; by=ty; if(hint){hint.classList.remove('fade'); hint.style.opacity=.25;} }
+  function move(e){ if(!drag) return; var t=e.touches?e.touches[0]:e; tx=Math.max(-24,Math.min(24,bx+(t.clientX-sx)*0.18)); ty=Math.max(-14,Math.min(14,by-(t.clientY-sy)*0.12)); last=performance.now(); if(e.cancelable) e.preventDefault(); }
+  function up(){ drag=false; last=performance.now(); }
+  box.addEventListener('mousedown',down); window.addEventListener('mousemove',move); window.addEventListener('mouseup',up);
+  box.addEventListener('touchstart',down,{passive:true}); box.addEventListener('touchmove',move,{passive:false}); window.addEventListener('touchend',up);
+  function tick(now){
+    var idle=!drag && now-last>1600;
+    if(idle){ tx+=(Math.sin(now/2600)*9-tx)*0.03; ty+=(Math.sin(now/3700)*3-ty)*0.03; }
+    else if(!drag){ tx*=0.97; ty*=0.97; }
+    x+=(tx-x)*0.12; y+=(ty-y)*0.12;
+    var f=Math.sin(now/1900)*4;
+    fx.style.transform='translateY('+f.toFixed(2)+'px) rotateY('+x.toFixed(2)+'deg) rotateX('+y.toFixed(2)+'deg)';
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
 </body>
 </html>
