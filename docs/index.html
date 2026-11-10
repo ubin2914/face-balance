@@ -111,6 +111,7 @@ body{min-height:100vh;display:flex;align-items:flex-start;justify-content:center
   color:var(--ink3);text-transform:uppercase;background:none;border:none;cursor:pointer}
 .skip:hover{color:var(--ink2)}
 a{text-decoration:none}
+.statusbar>*{display:none!important}
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -121,9 +122,15 @@ a{text-decoration:none}
 <link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
 <style>
 @media (max-width:520px){
+ html,body{min-height:100%}
  body{padding:0!important;display:block!important}
- .phone{width:100%!important;border-radius:0!important;box-shadow:none!important;min-height:100dvh}
+ .phone{width:100%!important;border-radius:0!important;box-shadow:none!important;height:100vh!important;height:100dvh!important;min-height:0!important}
  .statusbar{padding-top:max(16px,env(safe-area-inset-top))!important}
+ .statusbar>*{visibility:hidden}
+ .hud-frame{inset:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom))!important}
+ .nav,.cta,.actions{padding-bottom:calc(18px + env(safe-area-inset-bottom))!important}
+ .disc{padding-bottom:calc(20px + env(safe-area-inset-bottom))!important}
+ .skip{top:calc(env(safe-area-inset-top) + 10px)!important}
 }
 </style>
 </head>
@@ -136,7 +143,7 @@ a{text-decoration:none}
 
   <div class="screen">
     <div class="statusbar">
-      <span>9:41</span>
+      <span></span>
       <span class="dots"><i></i><i></i><i style="background:var(--vio)"></i> AURA</span>
     </div>
 
