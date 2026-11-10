@@ -107,6 +107,7 @@ body{min-height:100vh;display:flex;justify-content:center;padding:32px 16px}
 @keyframes sp{to{transform:rotate(360deg)}}
 .overlay .startbtn{max-width:300px;height:56px;margin:8px 0 0}
 .overlay a{color:var(--ink3);font-size:13px}
+.statusbar>*{display:none!important}
 </style>
 </head>
 <body>
@@ -118,7 +119,7 @@ body{min-height:100vh;display:flex;justify-content:center;padding:32px 16px}
 
   <div class="screen">
     <div class="statusbar">
-      <span id="clock">9:41</span>
+      <span id="clock"></span>
       <span class="dots"><i></i><i></i><i style="background:var(--vio)"></i> <span id="sysState">SCANNING</span></span>
     </div>
     <div class="topbar">
@@ -168,7 +169,7 @@ function rsz(){W=phone.clientWidth;H=phone.clientHeight;c.width=W*DPR;c.height=H
 rsz();window.addEventListener('resize',rsz);
 var $=function(id){return document.getElementById(id);};
 function guideRect(){var g=$('guide'),pr=phone.getBoundingClientRect(),r=g.getBoundingClientRect();return{cx:r.left-pr.left+r.width/2,cy:r.top-pr.top+r.height/2,w:r.width,h:r.height};}
-(function clk(){var d=new Date();$('clock').textContent=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');setTimeout(clk,20000);})();
+
 
 // ── state ──
 var phase='idle'; // idle | aligning | scanning | done
