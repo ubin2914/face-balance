@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Face Balance · 기록</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Face Balance">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png">
+<style>
+html,body{margin:0;padding:0;height:100%;background:#FFFFFF;-webkit-text-size-adjust:100%;overscroll-behavior:none}
+body{display:flex;justify-content:center;font-family:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Noto Sans KR','Segoe UI',sans-serif}
+#rn-root{position:relative;width:100%;max-width:430px;height:100vh;height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:#FFFFFF}
+.rn-view{display:flex;flex-direction:column;position:relative;box-sizing:border-box;min-width:0;min-height:0;flex-shrink:0;align-items:stretch;margin:0;padding:0;border:0 solid black;z-index:0}
+.rn-text{display:block;position:relative;box-sizing:border-box;margin:0;padding:0;border:0 solid black;color:#000;font-size:14px;white-space:pre-wrap;overflow-wrap:break-word;min-width:0;flex-shrink:0;font-family:inherit}
+.rn-text-inner{display:inline;font-family:inherit}
+.rn-touch{-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;outline:none}
+.rn-scroll{scrollbar-width:none}.rn-scroll::-webkit-scrollbar{display:none}
+[data-pe=none],[data-pe=none] *{pointer-events:none!important}
+[data-pe=box-none]{pointer-events:none}[data-pe=box-none]>*{pointer-events:auto}
+.rn-spin{border-width:2.5px;border-style:solid;border-radius:50%;animation:rnSpin .8s linear infinite}
+@keyframes rnSpin{to{transform:rotate(360deg)}}
+@keyframes rnSlideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes rnFade{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body data-screen="history">
+<div id="rn-root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js" crossorigin></script>
+<script src="fb-app.js?v=1"></script>
+</body>
+</html>
